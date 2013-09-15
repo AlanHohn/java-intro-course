@@ -1,0 +1,306 @@
+\documentclass{beamer} 
+\usepackage{dcolumn}
+\usepackage{listings}
+\lstset{basicstyle=\scriptsize, showspaces=false, showtabs=false, showstringspaces=false, breaklines, prebreak=..., tabsize=2}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{url}
+\usepackage{hanging}
+\urlstyle{rm}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\usetheme{JuanLesPins}
+\setbeamertemplate{footnote}{%
+  \hangpara{2em}{1}%
+  \makebox[2em][l]{\insertfootnotemark}\footnotesize\insertfootnotetext\par%
+}
+\beamertemplatenavigationsymbolsempty
+
+\title[]{Objects and Classes}
+\subtitle{Introduction to Java}
+\author{Alan Hohn\\
+\texttt{Alan.M.Hohn@lmco.com}}
+\date{25 July 2013}
+
+\begin{document}
+
+\begin{frame}
+   \titlepage
+\end{frame}
+
+\begin{frame}
+   \frametitle{Contents}
+   \tableofcontents[]
+\end{frame}
+
+\section{Brief Review}
+\begin{frame}
+\frametitle{Course Contents}
+\begin{itemize}
+\item Getting started writing Java programs (last time)
+\item Java programming language basics (today is 1 of 4 sessions)
+\item Packaging Java programs (1 session)
+\item Core library features (6 sessions)
+\item Java user interfaces (2 sessions)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Java Portability}
+\begin{itemize}
+\item A key motivation for Java is portability (ability to run on different platforms without recompiling)
+\item This is accomplished by compiling for a ``virtual machine'' with its own instruction set
+\begin{itemize}
+\item Known, appropriately, as the Java Virtual Machine (JVM)
+\item JVM instructions are called ``bytecode''
+\item Looks like assembly / machine language, but with added features like virtual function calls
+\end{itemize}
+\item The JVM provides a way to run bytecode on a specific operating system / machine instruction set
+\item Generally, the same bytecode can be run unmodified on any JVM
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Our Basic Java Example}
+\lstinputlisting[language=Java]{../examples/src/org/anvard/introtojava/HelloName.java}
+\end{frame}
+
+\begin{frame}
+\frametitle{Java Memory Management}
+\begin{itemize}
+\item That program raises questions about memory management
+\begin{itemize}
+\item We used the \texttt{new} keyword to make some objects
+\item We didn't ``free'' those objects, set them to \texttt{null}, or otherwise worry about them
+\end{itemize}
+\item In Java, new objects are allocated on the ``heap''
+\begin{itemize}
+\item The JVM manages the heap
+\item When the heap (or part of it) gets full, the JVM does ``garbage collection''
+\item This means identifying objects that are no longer referenced from live code and freeing the memory
+\end{itemize}
+\item Object allocation happens all the time in Java
+\begin{itemize}
+\item Most objects are short-lived
+\item For example, the \texttt{readLine} method and the \texttt{+} operator both instantiated new string objects
+\item Modern JVMs are optimized for lots of short-lived objects, so this is surprisingly performant
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{This Time}
+\begin{itemize}
+\item Java Objects and Classes
+\item Brief overview of Object-Oriented Programming
+\item Distinction between primitive types and objects
+\item Distinction between static and instance variables
+\end{itemize}
+\end{frame}
+
+\section{Object-Oriented Programming}
+\begin{frame}
+\frametitle{OOP for Programmers}
+\begin{itemize}
+\item Every ``new'' idea in Object-Oriented Programming (OOP) is not really new
+\item The basic design purpose behind OOP is encapsulation
+\begin{itemize}
+\item Information should be held in the smallest possible scope
+\item Simplifies maintenance, analysis of behavior, and reuse
+\end{itemize}
+\item OOP takes the \texttt{record} or \texttt{struct} and adds behavior to it
+\begin{itemize}
+\item Keep the code that operates on a piece of data together with the data
+\item Control the scope of both code and data so other code can only access through a defined interface
+\end{itemize}
+\item OOP lets us play other tricks that we will see later, but the basic idea is still improved encapsulation, because the data and the code that operates on it ``live'' inside the same construct
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Objects and Classes in Java}
+\begin{itemize}
+\item (Almost) everything in Java is an object
+\item All the code we write will be in a ``class''
+\begin{itemize}
+\item A class defines what an object ``looks like'': its unique name, its behavior, what data it stores
+\item There can be many objects that have the same class; each object is known as an ``instance'' of the class
+\item All share the same behavior, but have (mostly) independent data
+\end{itemize}
+\item Classes have ``fields'' that hold data, and ``methods'' that specify behavior
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Simple Class}
+\lstinputlisting[language=Java, lastline=19]{../examples/src/org/anvard/introtojava/designpatterns/Person.java}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Simple Class (continued)}
+\lstinputlisting[language=Java, firstline=21, lastline=36]{../examples/src/org/anvard/introtojava/designpatterns/Person.java}
+\lstset{language=Java}
+\begin{lstlisting}
+  ...
+    
+}
+\end{lstlisting}
+\end{frame}
+
+\section{OOP in Java}
+\begin{frame}
+\frametitle{Where Does a Class Reside?}
+\begin{itemize}
+\item When a class is \emph{loaded}, its \texttt{.class} file is read into memory in the permanent generation (PermGen)
+\item When an object is \emph{instantiated} (e.g. \texttt{Person p = new Person()}), the JVM allocates space on the heap for its \emph{instance data} (fields)
+\item The class stays in memory for the life of the JVM
+\item The instance stays on the heap until it is garbage collected
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Object References}
+\begin{itemize}
+\item An object can refer to another object, but it \emph{does not} keep its own copy of that object's data
+\begin{itemize}
+\item All objects are instantiated on the heap
+\item A field just contains a \emph{reference} to the other object
+\item The \texttt{this} keyword is a reference to the ``current'' instance
+\end{itemize}
+\item Object references are used for parameters, too
+\begin{itemize}
+\item Java is pass-by-value, but what is passed in the case of an object parameter is always a reference to the object (similar to a pointer)
+\item Only the object reference lives on the stack; the actual object is on the heap
+\item Objects modified inside methods retain their modifications when the method returns\footnote{Except for primitive wrapper classes, see below}
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\section{Java Basic Data Types}
+\begin{frame}[fragile]
+\frametitle{Primitives}
+\lstset{language=Java}
+\begin{lstlisting}
+  private Integer id;
+\end{lstlisting}
+\begin{itemize}
+\item This is an object reference that is an instance of \texttt{java.lang.Integer}, a class that is part of the JVM
+\item This means it is allocated on the heap and must eventually be garbage collected
+\item It also means it is allowed to be \texttt{null}, which can be useful in some cases
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+  private int id2;
+\end{lstlisting}
+\begin{itemize}
+\item This is a simple integer called a primitive
+\item It is more efficient in storage, but it cannot be null and does not have fields or methods
+\item The types of primitives are \texttt{byte}, \texttt{short}, \texttt{int}, \texttt{long}, \texttt{float}, \texttt{double}, \texttt{boolean}, and \texttt{char}
+\item All primitives in Java are signed
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Primitives Example}
+\lstinputlisting[language=Java, lastline=17]{../examples/src/org/anvard/introtojava/PrimitivesExample.java}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Primitives Example}
+\lstinputlisting[language=Java, firstline=18]{../examples/src/org/anvard/introtojava/PrimitivesExample.java}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Primitives Example}
+\lstset{language=}
+\begin{lstlisting}
+i: 0
+objectI: null
+objectI: 5
+objectI: 10
+i: 20
+i: 30
+val: 30       <-- Note no change in 'val'
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Strings}
+\begin{itemize}
+\item Strings are instances of \texttt{java.lang.String}
+\item The actual characters of the string typically exist on the heap
+\item Strings are immutable
+\item Modifying a string typically results in memory allocation for a new string
+\begin{itemize}
+\item This has important implications for performance, discussed later
+\item One exception is \emph{string literals}
+\item These are allocated in a single pool and reused
+\end{itemize}
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+String a = "abc"; // a points to a string in the pool
+String b = a; // Reuse: b points to the same string in the pool
+String c = a + b; // Brand new string "abcabc" allocated on the heap
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Primitive Wrapper Classes}
+\begin{itemize}
+\item Each primitive has a corresponding ``wrapper'' class (e.g. int and java.lang.Integer)
+\item These are objects: they exist on the heap, they can be null, they have methods
+\item However, they are also immutable
+\begin{itemize}
+\item Changing the `value' results in changing the instance to point to a new value
+\item Might be a reused value from a pool or a new one
+\end{itemize}
+\item Java SE 5 and later automatically converts between primitives and the corresponding wrapper class (a.k.a. autoboxing)
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+Integer a = new Integer(5); // Always a new instance
+a = 6; // Auto-boxing, illegal before Java SE 5
+a = Integer.valueOf(6) // This is what really happens
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}
+\frametitle{Static and Instance Variables}
+\begin{itemize}
+\item The \texttt{static} keyword marks a field or method as belonging to the class as a whole, not one particular instance
+\item Only one copy of a static field exists for the whole class
+\begin{itemize}
+\item The static field exists in PermGen, but it might be an object reference to an object on the heap
+\item While the instance points to a live object, that object is never garbage collected (because the class is in PermGen and never goes away)
+\end{itemize}
+\item Static fields and methods can be accessed \emph{and should be accessed} without referring to an object instance
+\item Static fields and methods must be handled carefully in multi-threaded environments
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Static Example}
+\lstinputlisting[language=Java]{../examples/src/org/anvard/introtojava/StaticExample.java}
+\end{frame}
+
+\begin{frame}
+\frametitle{Next Time}
+\begin{itemize}
+\item Java Control Flow
+\item Operators
+\item Exception Handling
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Credit in LMPeople}
+\begin{center}
+Last Time: LMPeople Course Code: 071409ILT01
+
+This Time: LMPeople Course Code: 071409ILT03
+\end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,315 @@
+\documentclass{beamer} 
+\usepackage{dcolumn}
+\usepackage{listings}
+\lstset{basicstyle=\scriptsize, showspaces=false, showtabs=false, showstringspaces=false, breaklines, prebreak=..., tabsize=2}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{url}
+\usepackage{hanging}
+\urlstyle{rm}
+\newcolumntype{.}{D{.}{.}{-1}}
+\newcolumntype{d}[1]{D{.}{.}{#1}}
+\usetheme{JuanLesPins}
+\setbeamertemplate{footnote}{%
+  \hangpara{2em}{1}%
+  \makebox[2em][l]{\insertfootnotemark}\footnotesize\insertfootnotetext\par%
+}
+\beamertemplatenavigationsymbolsempty
+
+\title[]{Language Basics}
+\subtitle{Introduction to Java}
+\author{Alan Hohn\\
+\texttt{Alan.M.Hohn@lmco.com}}
+\date{29 August 2013}
+
+\begin{document}
+
+\begin{frame}
+   \titlepage
+\end{frame}
+
+\begin{frame}
+   \frametitle{Contents}
+   \tableofcontents[]
+\end{frame}
+
+\section{Brief Review}
+\begin{frame}
+\frametitle{Course Contents}
+\begin{itemize}
+\item Getting started writing Java programs (complete)
+\item Java programming language basics (today is \#2 of 4 sessions)
+\item Packaging Java programs (1 session)
+\item Core library features (6 sessions)
+\item Java user interfaces (2 sessions)
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Our Basic Java Example}
+\lstinputlisting[language=Java]{../examples/src/org/anvard/introtojava/HelloName.java}
+\end{frame}
+
+\begin{frame}
+\frametitle{This Time}
+\begin{itemize}
+\item Method Calls and Field References
+\item Control Flow
+\item Operators
+\item Object Equality
+\end{itemize}
+\end{frame}
+
+\section{Method Calls and Field References}
+\begin{frame}
+\frametitle{The \texttt{this} keyword}
+\begin{itemize}
+\item Java methods and fields exist inside a class
+\begin{itemize}
+\item Unless static, methods and fields belong to a particular instance of the class (to an object)
+\item Java uses \texttt{this} to refer back to the current object instance
+\end{itemize}
+\item In Java, all references are ``scoped''
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Scoped references}
+\begin{itemize}
+\item Dot notation is used in Java to ``enter'' a level of scope
+\item The compiler searches outward for an unqualified reference
+\item The scope ends with the class (there are no global fields or methods)
+\item In other words, it is OK to use the keyword \texttt{this}, but not necessary unless avoiding ambiguity
+\lstset{language=Java}
+\begin{lstlisting}
+public void setValue(int value) {
+  this.value = value;
+}
+\end{lstlisting}
+\item Field references and method calls can be ``chained''
+\lstset{language=Java}
+\begin{lstlisting}
+// out is a (static) field in the System class
+// println is a method in the PrintStream class
+System.out.println("Hello, world!");
+\end{lstlisting}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Method Definitions}
+\begin{itemize}
+\item Java methods have four parts
+\begin{itemize}
+\item Return type (may be void)
+\item Identifier (name)
+\item Parameter list
+\item Exceptions
+\end{itemize}
+\item No two methods in the same class may have the same name and parameter list
+\item Methods may also have qualifiers such as \texttt{public} or \texttt{static}
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+public int add(Integer left, Integer right) 
+  throws OverflowException;
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Method Calls}
+\begin{itemize}
+\item The instance on which the method operates is like an implicit first parameter
+\begin{itemize}
+\item It is available to the method using \texttt{this}
+\item It is used implicitly when the method refers to instance variables
+\end{itemize}
+\item Objects returned from methods may be ``chained''
+\item Method calls must use parentheses even if there are no parameters, to avoid ambiguity with field references
+\item Instantiating an object with \texttt{new} is like calling a constructor method; it returns an object of the instantiated type
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+System.out.println("Hello, world!");
+String name = new BufferedReader(
+  new InputStreamReader(System.in)).readLine();
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Quick Note on Naming}
+\begin{itemize}
+\item The compiler searches for an unqualified reference in the current scope
+\item The \texttt{import} statement brings a class into the current scope so it can be used unqualified (without its full package name)
+\item By convention, Java classes are UpperCamelCase, while packages, fields, methods and variables are lowerCamelCase
+\item This is done to avoid hiding names unnecessarily
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+// import System; is implied in any Java program
+public String system() { return "Laptop"; }
+public String system = "Desktop";
+System.out.println("Hello, " + system()); // Hello, Laptop
+System.out.println("Hello, " + system); // Hello, Desktop
+System.out.println("Hello, " + System); // Compiler error
+\end{lstlisting}
+\end{frame}
+
+\section{Control Flow}
+\begin{frame}
+\frametitle{Java Control Flow}
+\begin{itemize}
+\item Java has the expected set of flow control keywords
+\begin{itemize}
+\item \texttt{if} - \texttt{ else if } - \texttt{else}
+\item \texttt{switch} - \texttt{case} - \texttt{default}
+\item \texttt{while} and \texttt{do} - \texttt{while}
+\item \texttt{for} (including an enhanced version for iterators)
+\end{itemize}
+\item \texttt{if} conditionals and \texttt{for} expressions must be in parentheses
+\item Curly braces ( \{ \} ) are used to group multiple statements; they are optional for a single-statement block but are recommended
+\item \texttt{break} works with \texttt{switch}, \texttt{for}, \texttt{while}, or \texttt{do-while}
+\item \texttt{continue} works with \texttt{for}, \texttt{while}, or \texttt{do-while}
+\item Labels are supported for \texttt{break} and \texttt{continue}
+\item \texttt{return} can appear anywhere in a method
+\item There is no \texttt{goto}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Control Flow Example}
+\lstset{language=Java}
+\begin{lstlisting}
+class BreakWithLabelDemo {
+  public boolean search2dArray(int[][] arrayOfInts, 
+    int searchfor) {
+    boolean foundIt = false;
+    search:
+    for (int i = 0; i < arrayOfInts.length; i++) {
+      for (int j = 0; j < arrayOfInts[i].length; j++) {
+        if (arrayOfInts[i][j] == searchfor) {
+          foundIt = true;
+          break search; // Or just 'return true;'
+        }
+      }
+    }
+    return foundIt;
+  }
+}
+\end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Enhanced \texttt{for}}
+\begin{itemize}
+\item Some Java classes implement an interface called \texttt{Iterable}
+\item This includes arrays and most of the built-in collection classes
+\item This means they will provide an ``iterator'' for looping through multiple objects
+\item Java provides a cleaner version of \texttt{for} for \texttt{Iterable} classes
+\item This version can also be more performant for some collections
+\end{itemize}
+\lstset{language=Java}
+\begin{lstlisting}
+class EnhancedForDemo {
+  public static void main(String[] args){
+     int[] numbers = 
+       {1,2,3,4,5,6,7,8,9,10};
+     for (int item : numbers) {
+       System.out.println("Item is: " + item);
+     }
+  }
+}
+\end{lstlisting}
+\end{frame}
+
+\section{Operators and object equality}
+\begin{frame}
+\frametitle{Java Operators}
+\begin{itemize}
+\item Java has the expected set of operators (\texttt{+ - * / \%})
+\item Similar to C, there is a difference between bitwise operators (\texttt{\& | \^}) and comparison operators (\texttt{\&\& ||})
+\item Unlike C, Java has no ``unsigned'' values, but in addition to the shift operators (\texttt{<< >>}) there is an ``unsigned'' shift right \texttt{>>>}.
+\item Java has clever compound operators like C (e.g. \texttt{++ -- +=}) and the ternary operator \texttt{(? :)}
+\item The comparison operators (\texttt{< <= > >=}) only work for primitive types and their wrapper classes
+\item There is no exponentiation operator; use \texttt{Math.pow()}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Widening and Narrowing Conversions}
+\begin{itemize}
+\item Java is a strongly typed language
+\item However, operators can mix types under certain circumstances
+\item Java will automatically perform ``widening'' conversions ($\texttt{byte} \rightarrow \texttt{short} \rightarrow \texttt{int} \rightarrow \texttt{long} \rightarrow \texttt{float} \rightarrow \texttt{double}$)
+\item Narrowing conversion can lose information, so Java requires an explicit cast
+\lstset{language=Java}
+\begin{lstlisting}
+double d = 123.45; float f = (float) d;
+\end{lstlisting}
+\item When mixing operators, the resulting value will be the `widest' required
+\item For example, for the division operator \texttt{/}, the result can be an integer (for integer / integer) or a floating-point value (for floating-point or mixed types)
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Equality Operators}
+\begin{itemize}
+\item Java has two kinds of equality: reference equality (\texttt{o1 == o2}) and object equality (\texttt{o1.equals(o2)})
+\item Reference equality means the two references refer to exactly the same object in memory
+\item Object equality means the objects are semantically the same (mean the same thing)
+\item For classes you create, you can (and often should) define your own rules for object equality by making your own \texttt{equals()} method
+\item Later we will talk about \texttt{hashCode()}, an important method that's often seen together with \texttt{equals()}
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Equality example}
+\lstset{language=Java}
+\begin{lstlisting}
+public class Person {
+  public String firstName;
+  public String lastName;
+  public boolean equals(Object obj) {
+    if (null == obj) return false;
+    if (obj.getClass() != this.getClass()) return false;
+    Person other = (Person)obj;
+    return other.firstName == this.firstName && 
+        other.lastName == this.lastName;
+  }
+}
+
+Person p1 = new Person(); 
+p1.firstName = "Joe";
+p1.lastName = "Smith";
+Person p2 = new Person(); 
+p2.firstName = "Joe";
+p2.lastName = "Smith";
+
+p1 == p2; // false
+p1.equals(p2) // true
+\end{lstlisting}
+
+\end{frame}
+
+
+
+\section{Next Time}
+\begin{frame}
+\frametitle{Next Time}
+\begin{itemize}
+\item Exception Handling
+\item Checked and Unchecked Exceptions
+\item Try-With-Resources
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Credit in LMPeople}
+\begin{center}
+LMPeople Course Code: 071409ILT04
+\end{center}
+\end{frame}
+
+\end{document}
