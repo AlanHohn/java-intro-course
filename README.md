@@ -1,4 +1,6 @@
-java-intro-course
+java-intro-course: Introduction to Java sample code
 =================
 
-Sample code for Introduction to Java
+This repository contains the sample code for my Introduction to Java 
+course. The code is licensed under an Apache license, version 2.0.
+
