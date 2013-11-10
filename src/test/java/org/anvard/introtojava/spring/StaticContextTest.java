@@ -34,7 +34,7 @@ public class StaticContextTest {
 		assertNotNull(inner);
 		assertEquals("ghi", inner.getProp1());
 		assertEquals("jkl", inner.getProp2());
-		OuterBean outer = (OuterBean) ctx.getBean("outer");
+		OuterBean outer = (OuterBean) ctx.getBean(OuterBean.class);
 		assertNotNull(outer);
 		assertEquals("xyz", outer.getProp1());
 		assertEquals(inner, outer.getInner());
