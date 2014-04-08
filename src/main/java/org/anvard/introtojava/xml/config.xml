@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<config>
+    <savePath>/opt/java/save</savePath>
+    <maxSize>256</maxSize>
+</config>
