@@ -8,7 +8,7 @@ public final class ObservableBeanFactory {
 		PropertyChangeInterceptor interceptor = new PropertyChangeInterceptor();
 
 		Enhancer e = new Enhancer();
-		e.setSuperclass(SampleBean.class);
+		e.setSuperclass(beanClass);
 		e.setCallback(interceptor);
 		e.setInterfaces(new Class[] { Observable.class });
 
