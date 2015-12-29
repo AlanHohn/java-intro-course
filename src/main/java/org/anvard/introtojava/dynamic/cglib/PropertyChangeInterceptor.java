@@ -38,7 +38,7 @@ public class PropertyChangeInterceptor implements MethodInterceptor {
 	private Object tryForGetter(String setterName, Object target) {
 		String getterName = "get" + setterName.substring(3);
 		try {
-			return target.getClass().getMethod(getterName, new Class<?>[]{}).invoke(target, (Object[]) null);
+			return target.getClass().getMethod(getterName, new Class<?>[] {}).invoke(target, (Object[]) null);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
 				| SecurityException e) {
 			return null;
@@ -71,15 +71,12 @@ public class PropertyChangeInterceptor implements MethodInterceptor {
 		if (isSetter) {
 			oldValue = tryForGetter(name, target);
 		}
-		try {
-			if (!Modifier.isAbstract(method.getModifiers())) {
-				targetReturn = proxy.invokeSuper(target, args);
-			}
-		} finally {
-			if (isSetter) {
-				String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
-				firePropertyChange(propName, oldValue, args[0]);
-			}
+		if (!Modifier.isAbstract(method.getModifiers())) {
+			targetReturn = proxy.invokeSuper(target, args);
+		}
+		if (isSetter) {
+			String propName = Character.toLowerCase(name.charAt(3)) + name.substring(4);
+			firePropertyChange(propName, oldValue, args[0]);
 		}
 		return targetReturn;
 	}
