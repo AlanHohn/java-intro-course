@@ -8,3 +8,5 @@ target/
 *.vrb
 *.snm
 *.nav
+*.iml
+.idea/
